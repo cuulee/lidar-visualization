@@ -204,17 +204,17 @@ function dataTransformPoly(values){
       contourBuildingLayer.push(polyEdge)
     }
     if (floodHeight<0){
-      polygonFloodLayer.push({"Contour":contourFloodLayer,"Height":0,"assetValue":values[i].BLDGVAL17})
-      polygonBuildingLayer.push({"Contour":contourBuildingLayer,"Height":values[i].avg_ground,"assetValue":values[i].BLDGVAL17})
+      polygonFloodLayer.push({"Contour":contourFloodLayer,"Height":0,"assetValue":values[i].BLDGVAL17,"displayHeight":values[i].avg_ground,"displayZ":MHHWadjustedZ})
+      polygonBuildingLayer.push({"Contour":contourBuildingLayer,"Height":values[i].avg_ground,"assetValue":values[i].BLDGVAL17,"displayHeight":values[i].avg_ground,"displayZ":MHHWadjustedZ})
     }
     else{
       if(floodHeight>values[i].avg_ground){
-        polygonFloodLayer.push({"Contour":contourFloodLayer,"Height":values[i].avg_ground,"assetValue":values[i].BLDGVAL17})
-        polygonBuildingLayer.push({"Contour":contourBuildingLayer,"Height":0,"assetValue":values[i].BLDGVAL17})  
+        polygonFloodLayer.push({"Contour":contourFloodLayer,"Height":values[i].avg_ground,"assetValue":values[i].BLDGVAL17,"displayHeight":values[i].avg_ground,"displayZ":MHHWadjustedZ})
+        polygonBuildingLayer.push({"Contour":contourBuildingLayer,"Height":0,"assetValue":values[i].BLDGVAL17,"displayHeight":values[i].avg_ground,"displayZ":MHHWadjustedZ})  
       }
       else{
-        polygonFloodLayer.push({"Contour":contourFloodLayer,"Height":floodHeight,"assetValue":values[i].BLDGVAL17})
-        polygonBuildingLayer.push({"Contour":contourBuildingLayer,"Height":values[i].avg_ground-floodHeight,"assetValue":values[i].BLDGVAL17})
+        polygonFloodLayer.push({"Contour":contourFloodLayer,"Height":floodHeight,"assetValue":values[i].BLDGVAL17,"displayHeight":values[i].avg_ground,"displayZ":MHHWadjustedZ})
+        polygonBuildingLayer.push({"Contour":contourBuildingLayer,"Height":values[i].avg_ground-floodHeight,"assetValue":values[i].BLDGVAL17,"displayHeight":values[i].avg_ground,"displayZ":MHHWadjustedZ})
       }
     }
   }
@@ -287,9 +287,9 @@ function tooltipEvent(info){
       <div><b>Asset Property Value &nbsp;</b></div>
       <div>${object.assetValue} $</div>
       <div><b>Height Above MHHW</b></div>
-      <div>${(Math.round(object.Contour[0][2]*100))/100} ft</div>
+      <div>${(Math.round(object.displayZ*100))/100} ft</div>
       <div><b>Height Above Ground</b></div>
-      <div>${(Math.round(object.Height*100))/100} ft</div>
+      <div>${(Math.round(object.displayHeight*100))/100} ft</div>
     `;
   } else { 
     tooltip.innerHTML = '';
