@@ -11,24 +11,16 @@ var debounceZoom = debounce(function(v,boundingPoly){
 
 //Establish connection with MapD using Mapd-connector
 
-//Community Azure Instance
+//Mapd server details
 const connector = new MapdCon();
 connector.protocol("http")
-  .host("13.90.129.165")
-  .port("9092")
-  .dbName("mapd")
-  .user("mapd")
-  .password("HyperInteractive!") 
+  .host(hostname)
+  .port(port)
+  .dbName(dbname)
+  .user(username)
+  .password(pwd) 
   .connectAsync()
   .then(session=>
-// connector.protocol("https")
-//   .host("kali.mapd.com")
-//   .port("10043")
-//   .dbName("mapd")
-//   .user("mapd")
-//   .password("HyperInteractive")
-//   .connectAsync()
-//   .then(session=>
     {
       var queries=queryBuild([[-81.36484675265373,31.130611454325006],[-81.36484675265373,30.997776159412396],[-81.47391023914975,30.997776159412396],[-81.47391023914975,31.130611454325006]])
       Promise.all([
