@@ -1,5 +1,5 @@
 {
-  "name": "pointCloud-example",
+  "name": "lidar-visualization-example",
   "scripts": {
     "start": "webpack-dev-server --content-base ./src --config ./webpack.config.js",
     "build": "webpack --mode production",

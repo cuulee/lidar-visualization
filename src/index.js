@@ -13,22 +13,22 @@ var debounceZoom = debounce(function(v,boundingPoly){
 
 //Community Azure Instance
 const connector = new MapdCon();
-// connector.protocol("http")
-//   .host("13.90.129.165")
-//   .port("9092")
-//   .dbName("mapd")
-//   .user("mapd")
-//   .password("HyperInteractive") //update password
-//   .connectAsync()
-//   .then(session=>
-connector.protocol("https")
-  .host("kali.mapd.com")
-  .port("10043")
+connector.protocol("http")
+  .host("13.90.129.165")
+  .port("9092")
   .dbName("mapd")
   .user("mapd")
-  .password("HyperInteractive")
+  .password("HyperInteractive!") 
   .connectAsync()
   .then(session=>
+// connector.protocol("https")
+//   .host("kali.mapd.com")
+//   .port("10043")
+//   .dbName("mapd")
+//   .user("mapd")
+//   .password("HyperInteractive")
+//   .connectAsync()
+//   .then(session=>
     {
       var queries=queryBuild([[-81.36484675265373,31.130611454325006],[-81.36484675265373,30.997776159412396],[-81.47391023914975,30.997776159412396],[-81.47391023914975,31.130611454325006]])
       Promise.all([
@@ -58,30 +58,25 @@ function createDeckGL(pointData,polygonFloodLayer,polygonBuildingLayer){
   layers:[ addPointCloud(pointData),addPolygonBuildingHeight(polygonBuildingLayer),addPolygonFloodIndicator(polygonFloodLayer)],
   zoom:12,
   onViewportChange: v => {
-    //use screen size to get map coordinates
     if(currentFilter.freeze==0)
     {
-
       debounceZoom(v,computeBoundingBox());
     }
   }
   });
 }
 
-//Initialize Filter and DOMEvents
+//Compute Bounding Box
 function computeBoundingBox(){
+  //use screen size to get map coordinates
   var upperRight=deckgl.layerManager.viewports[0].unproject([deckgl.width,0]);
   var lowerRight=deckgl.layerManager.viewports[0].unproject([deckgl.width,deckgl.height]);
   var upperLeft=deckgl.layerManager.viewports[0].unproject([0,0]);
   var lowerLeft=deckgl.layerManager.viewports[0].unproject([0,deckgl.height]);
-  var center=deckgl.layerManager.viewports[0].unproject([deckgl.width/2,deckgl.height/2])
-  var rightC=deckgl.layerManager.viewports[0].unproject([deckgl.width,deckgl.height/2])
-  var bottomC=deckgl.layerManager.viewports[0].unproject([deckgl.width/2,deckgl.height])
-  var leftC=deckgl.layerManager.viewports[0].unproject([0,deckgl.height/2])
-  var topC=deckgl.layerManager.viewports[0].unproject([deckgl.width/2,0])
-  return [upperRight,lowerRight,lowerLeft,upperLeft,center,rightC,bottomC,leftC,topC]
+  return [upperRight,lowerRight,lowerLeft,upperLeft]
 }
 
+//Initialize Filter and DOMEvents
 function initializeDOM(){
   console.log(currentFilter)
   document.getElementById("submitButton").addEventListener("click",function(){
@@ -181,7 +176,7 @@ function debounce(func, wait, immediate) {
   };
 }
 
-
+//Prepare polygon data for deckgl polygon layer
 function dataTransformPoly(values){
   var i,j;
   var polygonFloodLayer=[]
@@ -230,6 +225,7 @@ function dataTransformPoly(values){
   
 }
 
+//Prepare point data for deckgl point cloud layer
 function dataTransformPoint(values) {
   var i;
   var data=[];
@@ -240,6 +236,7 @@ function dataTransformPoint(values) {
   return (data);
 }
 
+//Create Flood indicator layer
 function addPolygonFloodIndicator(data){
   return new deck.PolygonLayer({
     id: 'polygon-indicator-layer',
@@ -259,6 +256,7 @@ function addPolygonFloodIndicator(data){
   });
 }
 
+//Create Building height layer
 function addPolygonBuildingHeight(data){
   return new deck.PolygonLayer({
     id: 'polygon-ground-layer',
@@ -278,6 +276,7 @@ function addPolygonBuildingHeight(data){
   });
 }
 
+//Tooltip function to display asset value
 function tooltipEvent(info){
   const {x, y, object} = info;
   var tooltip=document.getElementById('container').querySelector("#tooltip")
@@ -297,6 +296,7 @@ function tooltipEvent(info){
   }
 }
 
+//Create Point cloud layer
 function addPointCloud(data) {
   return new deck.PointCloudLayer({
     id: 'point-cloud-layer',
@@ -322,6 +322,7 @@ function addPointCloud(data) {
   });
 }
 
+//Build query using bounding box(poly) and filter(currentFilter) values
 function queryBuild(poly){
     var filterPoints=' AND NumberOfReturns<='+currentFilter.NOR
   //GP : Ground Points
@@ -344,10 +345,11 @@ function queryBuild(poly){
     var pointQuery="SELECT X,Y,Z,HeightAboveGround,NumberOfReturns FROM jekyll_points WHERE MOD(jekyll_points.rowid * 2654435761, 4294967296) < "+"((50000*4294967296)/"+rows_passing_filters+") AND ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo) "+filterPoints+" LIMIT 50000";
   }
   var filterPoly="AND CLASS IN ('"+currentFilter.commercial+"','"+currentFilter.government+"','"+currentFilter.duplex+"','"+currentFilter.quad+"','"+currentFilter.residential+"','"+currentFilter.condo+"','"+currentFilter.SFR+"')"
-  var polyQuery = "SELECT mapd_geo,avg_z,avg_ground,BLDGVAL17 FROM jekyll_polygons WHERE SHAPE_area<12291479 AND FID_1 IN (SELECT DISTINCT(FID_1) FROM jekyll_polygonEdges WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo)) "+filterPoly;
+  var polyQuery = "SELECT mapd_geo,avg_z,avg_ground,BLDGVAL17 FROM jekyll_polygons WHERE SHAPE_area<12291479 AND FID_1 IN (SELECT DISTINCT(FID_1) FROM jekyll_polygonVertices WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo)) "+filterPoly;
   return [polyQuery,pointQuery]
 }
 
+//Enable/Disable High Precision based on zoom level
 function zoomCheck(zoom){
   if(zoom==20){
     $("#highPrecision").bootstrapToggle('enable');
@@ -360,28 +362,14 @@ function zoomCheck(zoom){
     currentFilter.HP=0
   }
 }
+
+//Request query from MapD
 function executeQuery(boundingPoly){
   var queries=queryBuild([boundingPoly[0],boundingPoly[1],boundingPoly[2],boundingPoly[3]])
   Promise.all([
     connector.queryAsync(queries[0],defaultQueryOptions),
     connector.queryAsync(queries[1],defaultQueryOptions)
-    //points for the Polygons are arranged in clockwise direction begining from upperRight corner
-    // //upperLeft Polygon
-    // connector.queryAsync(queryBuild([[boundingPoly[8][0],boundingPoly[8][1]],[boundingPoly[4][0],boundingPoly[4][1]],[boundingPoly[7][0],boundingPoly[7][1]],[boundingPoly[3][0],boundingPoly[3][1]]]),defaultQueryOptions),
-    // //lowerLeft Polygon
-    // connector.queryAsync(queryBuild([[boundingPoly[4][0],boundingPoly[4][1]],[boundingPoly[6][0],boundingPoly[6][1]],[boundingPoly[2][0],boundingPoly[2][1]],[boundingPoly[7][0],boundingPoly[7][1]]]),defaultQueryOptions),
-    // //upperRight Polygon
-    // connector.queryAsync(queryBuild([[boundingPoly[0][0],boundingPoly[0][1]],[boundingPoly[5][0],boundingPoly[5][1]],[boundingPoly[4][0],boundingPoly[4][1]],[boundingPoly[8][0],boundingPoly[8][1]]]),defaultQueryOptions),
-    // //lowerRight Polygon
-    // connector.queryAsync(queryBuild([[boundingPoly[5][0],boundingPoly[5][1]],[boundingPoly[1][0],boundingPoly[1][1]],[boundingPoly[6][0],boundingPoly[6][1]],[boundingPoly[4][0],boundingPoly[4][1]]]),defaultQueryOptions)
-    // 
   ]).then(values=>{
-
-    // var i;
-    // var newlist=[];
-    // for(i=2;i<values.length;i++){
-    //   newlist=newlist.concat(values[i]);
-    // }
     console.log(values)
     var polygonData=dataTransformPoly(values[0])
     deckgl.setProps({layers: [addPointCloud(dataTransformPoint(values[1])),addPolygonBuildingHeight(polygonData[1]),addPolygonFloodIndicator(polygonData[0])]});

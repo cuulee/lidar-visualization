@@ -20,22 +20,7 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
 
-    <link rel="stylesheet" href="style4.css">
-
-    <style type="text/css">
-      
-      /** {margin: 0;padding: 0;}
-      
-      #container2 {width: 200px; height: 100vh;background-color: white;float:right;opacity:0.8;}
-      #box1{height:80px;border-bottom: 1px solid #333;font-weight: bold; text-align: center;vertical-align: middle; }
-      #assetHeader,#elevationHeader,#pointsHeader{font-size: 10px;margin-top:25px;}
-      #asset { font-size: 40px;}
-      #box2,#box3{height:50px; width:inherit; border-bottom: 1px solid #333;text-align: center;vertical-align: middle;font-weight: bold;}
-      ul li {display:inline-block; padding-top: 5px;padding-left: 15px;}
-      #box4{height:80px;border-bottom: 1px solid #333;font-weight: bold; text-align: center;vertical-align: middle;width:inherit; }
-      #bldg{font-size: 10px; margin-top: 20px;}*/
-      /*legend {background-color: #000;color: #fff;padding: 3px 6px;}*/
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="main">
@@ -118,10 +103,10 @@
           Ground Points <input id='groundPoints' type="checkbox" checked data-toggle="toggle" data-size="mini"> 
         </label>
         <label class="checkbox-inline" >
-          Surface Model <input id="DSM" type="checkbox" data-toggle="toggle" data-size="mini" checked class="alignRight"> 
+          Surface Points <input id="DSM" type="checkbox" data-toggle="toggle" data-size="mini" checked class="alignRight"> 
         </label>
-        <label class="checkbox-inline" >
-          Terrain Model&nbsp;&nbsp;<input id="DTM" type="checkbox" data-toggle="toggle" data-size="mini" checked class="alignRight"> 
+        <label class="checkbox-inline1">
+          Vegetation Points<input id="DTM" type="checkbox" data-toggle="toggle" data-size="mini" checked class="alignRight"> 
         </label>
          <label class="checkbox-inline" >
           High Precision <input id="highPrecision" type="checkbox" data-toggle="toggle" data-size="mini" class="alignRight"> 
@@ -158,64 +143,6 @@
 </body> 
 </html>  
 
-
-
-<!-- <body>
-  <div id="main">
-    <div id="container"></div>
-    <div id="container2">
-      <fieldset id="asset"> 
-      <legend>Asset Value</legend> 
-      <div id="box1">
-          <div id='assetHeader'>Asset Loss</div>
-          <div id="asset">1234567</div>
-      </div>
-      </fieldset>
-      <div id="box2">
-        <div id='elevationHeader'>Elevation</div>
-        <input type="range" id="elevation" ></input>
-      </div>
-      <div id="box3">
-        <div id="pointsHeader">Number of Points</div>
-        <input type="range" id="points"></input>
-      </div>
-      <div id="box4">
-        <div id="bldg">Building Class</div>
-      <ul>  
-      <li>
-        <div>
-          <input type="checkbox" id="R1" value="R1" checked />
-          <label for="R1">R1</label>
-        </div>
-      </li>
-      <li>
-        <div>
-          <input type="checkbox" id="C1" value="C1" checked />
-          <label for="C1">C1</label>
-        </div>
-      </li>
-    </ul>
-    <ul>
-      <li>
-        <div>
-          <input type="checkbox" id="R9" value="R9" checked />
-          <label for="R9">R9</label>
-        </div>
-      </li>
-      <li>
-        <div>
-          <input type="checkbox" id="C9" value="C9" checked />
-          <label for="C9">C9</label>
-        </div>
-      </li>
-    </ul>
-    </div>
-    </div>
-  </div>
-</body>
-
-</html>
- -->
 
 
 
